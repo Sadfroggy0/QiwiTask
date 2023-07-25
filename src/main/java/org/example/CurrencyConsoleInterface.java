@@ -5,8 +5,6 @@ import org.example.httpRequest.CentralBankConnection;
 import org.example.parser.CurrencyParser;
 import org.example.utils.OperationType;
 import org.xml.sax.SAXException;
-
-import javax.xml.crypto.Data;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -27,7 +25,15 @@ public class CurrencyConsoleInterface {
     private String code;
     private LocalDate date;
 
+
+    public void init(){
+        //разбить по типу команды
+        if(type.equals(OperationType.CurrencyRates.name())){
+
+        }
+    }
     public void parseCurrencyRatesForDate(){
+        System.out.println("Введите комманду для поиска валюты в формате: currency_rates --code=USD --date=2022-10-08");
         Scanner scanner = new Scanner(System.in);
 
         String input = scanner.nextLine();
@@ -44,17 +50,18 @@ public class CurrencyConsoleInterface {
             System.out.println("Ошибка ввода параметров функции");
         }
 
+        //формируем строку для нового HTTP запроса из переданных в команде параметров
         StringBuilder sb = new StringBuilder(baseUrl);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formattedDate = date.format(formatter);
         sb.append("date_req="+formattedDate);
 
-        CentralBankConnection cb = new CentralBankConnection();
-        HttpResponse resp =  cb.getBodyFromRequest(sb.toString());
-        File xml = cb.convertStringToXMLDocument(resp);
-        CurrencyParser currencyParser = new CurrencyParser();
-        SAXParserFactory factory = SAXParserFactory.newInstance();
+        CentralBankConnection cb = new CentralBankConnection(); //создание http запроса
+        HttpResponse resp =  cb.getBodyFromRequest(sb.toString()); //получение объекта httpresponse
+        File xml = cb.convertStringToXMLDocument(resp); // httpresponse -> xml
 
+        CurrencyParser currencyParser = new CurrencyParser(); //парсинг XML на объекты
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             SAXParser parser = factory.newSAXParser();
             parser.parse(xml, currencyParser);
@@ -62,12 +69,19 @@ public class CurrencyConsoleInterface {
         catch (ParserConfigurationException | SAXException | IOException e){
             e.printStackTrace();
         }
-        List<Currency> list = currencyParser.getCurrencyList();
+        List<Currency> list = currencyParser.getCurrencyList(); //список объектов
 
+        boolean currencyFound = false;
         for (int i = 0; i < list.size(); i++){
             if(code != null && list.get(i).getCharCode().equals(code)){
                 System.out.println(list.get(i).toString());
-                break;
+                currencyFound = true;
+            }
+        }
+        if(!currencyFound){
+            System.out.println("Не могу найти валюту. Вот весь список валют: ");
+            for (int i = 0; i< list.size(); i++){
+                System.out.println(list.get(i).toString());
             }
         }
 

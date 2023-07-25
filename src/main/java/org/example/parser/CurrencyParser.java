@@ -6,11 +6,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CurrencyParser extends DefaultHandler {
+    private static final String VAL_CURS ="ValCurs";
     private static final String VALUTE_ID = "Valute";
     private static final String NUM_CODE = "NumCode";
     private static final String CHAR_CODE = "CharCode";
@@ -34,7 +34,7 @@ public class CurrencyParser extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         switch (qName){
-            case "ValCurs":
+            case VAL_CURS:
                 currencyList = new ArrayList<>();
                 break;
             case VALUTE_ID:
