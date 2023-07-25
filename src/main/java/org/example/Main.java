@@ -31,7 +31,7 @@ public class Main {
 //        List<Currency> list = currencyParser.getCurrencyList();
 //        System.out.println();
         CurrencyConsoleInterface currencyConsoleInterface = new CurrencyConsoleInterface();
-        currencyConsoleInterface.initCommand();
+        currencyConsoleInterface.parseCurrencyRatesForDate();
 
     }
 }

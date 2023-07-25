@@ -8,6 +8,11 @@ public class Currency {
     private String name;
     private double value;
 
+    @Override
+    public String toString() {
+        return String.format("%s (%s): %.4f", CharCode, name, value);
+    }
+
     public String getValuteID() {
         return valuteID;
     }
